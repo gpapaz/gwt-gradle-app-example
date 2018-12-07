@@ -1,0 +1,13 @@
+<module rename-to="App">
+    <inherits name="com.google.gwt.user.User"/>
+    <inherits name="elemental2.dom.Dom"/>
+    <inherits name="com.github.nmorel.gwtjackson.GwtJackson" />
+    <inherits name="github.gwt.gradle.example.module.AppModule" />
+
+    <source path="client"/>
+    <source path="shared"/>
+
+    <entry-point class="github.gwt.gradle.example.client.AppEntryPoint"/>
+
+    <set-property name="user.agent" value="safari"/>
+</module>

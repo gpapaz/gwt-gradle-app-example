@@ -1,0 +1,6 @@
+rootProject.name = 'gwt-gradle-app'
+include 'gwt-gradle-app-client-main'
+include 'gwt-gradle-app-client-module'
+include 'gwt-gradle-app-client-shared'
+include 'gwt-gradle-app-client-server'
+

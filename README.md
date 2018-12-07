@@ -1,2 +1,3 @@
 # gwt-gradle-app-example
-gwt-gradle-app-example
+
+build -> gwtCompile -> HttpsServer.java

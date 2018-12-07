@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+group 'github.gwt.gradle.example'
+version '1.0.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.gwt:gwt-user:2.8.2'
+    implementation 'com.google.gwt:gwt-dev:2.8.2'
+    implementation 'com.google.elemental2:elemental2-dom:1.0.0-RC1'
+}

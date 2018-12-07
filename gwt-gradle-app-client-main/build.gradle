@@ -1,0 +1,74 @@
+plugins {
+    id 'java'
+}
+
+group 'github.gwt.gradle.example'
+version '1.0.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+
+def app = 'App'
+def module = 'github.gwt.gradle.example.App'
+
+dependencies {
+    implementation 'com.google.gwt:gwt-user:2.8.2'
+    implementation 'com.google.gwt:gwt-dev:2.8.2'
+    implementation 'com.google.elemental2:elemental2-dom:1.0.0-RC1'
+    implementation group: 'com.github.nmorel.gwtjackson', name: 'gwt-jackson', version: '0.15.4'
+
+    implementation project(':gwt-gradle-app-client-module')
+    implementation project(':gwt-gradle-app-client-shared')
+}
+
+task gwtCompile(type: JavaExec) {
+    dependsOn classes
+    description = 'Compile GWT Project'
+    inputs.files(gwtClasspath())
+    outputs.dir("$project.buildDir/generated/source/war")
+    workingDir "$project.buildDir/generated/source"
+    doFirst { workingDir.mkdirs() }
+    main = 'com.google.gwt.dev.Compiler'
+    classpath gwtClasspath()
+    args = ['-sourceLevel', '8', '-generateJsInteropExports', '-draftCompile', '-failOnError', module]
+}
+
+task gwtServe(type: JavaExec) {
+    dependsOn classes
+    description = 'Super Dev Mode Server'
+    workingDir "$project.buildDir/gwtServe"
+    doFirst { workingDir.mkdirs() }
+    main = 'com.google.gwt.dev.DevMode'
+    classpath gwtClasspath()
+    args = ['-sourceLevel', '8', '-generateJsInteropExports', '-failOnError', module, '-XmethodNameDisplayMode', 'ABBREVIATED']
+}
+
+private gwtClasspath() {
+    //define subprojects paths
+    def module = project(':gwt-gradle-app-client-module').projectDir
+    def shared = project(':gwt-gradle-app-client-shared').projectDir
+
+    files(
+            sourceSets.main.java.srcDirs,
+            sourceSets.main.resources.srcDirs,
+            sourceSets.main.compileClasspath,
+            file("$project.buildDir/generated/src/main/java"),
+            file("$module/src/main/java"), //path to source
+            file("$shared/src/main/java")  //path to source
+    )
+}
+
+// Copy generated js to the server
+task copyGWTScriptsToServer(type:Copy) {
+    def server = project(':gwt-gradle-app-client-server').projectDir
+
+    from "${buildDir}/generated/source/war/${app}"
+    into "${server}/src/main/resources/js"
+}
+
+// copy js after compile
+gwtCompile.finalizedBy copyGWTScriptsToServer
